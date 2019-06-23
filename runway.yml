@@ -1,0 +1,8 @@
+python: 3.6
+cuda: 9.0
+entrypoint: python runway_model.py
+framework: tensorflow
+build_steps:
+  - pip install runway-python
+  - pip install -r requirements.txt
+
