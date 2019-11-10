@@ -4,6 +4,7 @@ import tensorflow as tf
 from PIL import Image
 from inpaint_model import InpaintCAModel
 import neuralgym as ng
+from scipy.misc import imresize
 
 g = None
 sess = None
@@ -55,7 +56,13 @@ def inpaint(output_image, inputs):
   feed_dict = {input_image: np.concatenate([image, mask], axis=2)}
   with g.as_default():
     result = sess.run(output_image, feed_dict=feed_dict)
-  return Image.fromarray(result[0][:, :, ::-1]).resize(original_size)
+  result = result[0][:, :, ::-1]
+  result = imresize(result, original_size[::-1])
+  mask = np.array(inputs['mask'].resize(original_size), dtype=np.float32)
+  mask = np.stack([mask, mask, mask], -1)
+  masked_result = mask * result
+  masked_result += (1 - mask) * np.array(inputs['image'])
+  return masked_result.astype(np.uint8)
 
 
 if __name__ == '__main__':

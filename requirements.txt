@@ -1,3 +1,4 @@
 opencv-python
 git+https://github.com/JiahuiYu/neuralgym
 pyyaml
+scipy
