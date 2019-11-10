@@ -3,10 +3,13 @@ import numpy as np
 import tensorflow as tf
 from PIL import Image
 from inpaint_model import InpaintCAModel
+import neuralgym as ng
 
 g = None
 sess = None
 input_image = None
+
+FLAGS = ng.Config('inpaint.yml')
 
 @runway.setup(options={'checkpoint_dir': runway.file(is_directory=True)})
 def setup(opts):
@@ -19,7 +22,7 @@ def setup(opts):
     sess_config = tf.ConfigProto()
     sess_config.gpu_options.allow_growth = True
     input_image = tf.placeholder(tf.float32, shape=(1, 256, 256*2, 3))
-    output_image = model.build_server_graph(input_image)
+    output_image = model.build_server_graph(FLAGS, input_image)
     output_image = (output_image + 1.) * 127.5
     output_image = tf.reverse(output_image, [-1])
     output_image = tf.saturate_cast(output_image, tf.uint8)
