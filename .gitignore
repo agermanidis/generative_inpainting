@@ -1,5 +1,5 @@
 model_logs
-neuralgym_logs
+logs
 data
 *png
 .DS_Store
